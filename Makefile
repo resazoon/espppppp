@@ -5,10 +5,10 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = AibouESP
 
-# 相棒が作ったファイルの名前をここに書くじょ！
-AibouESP_FILES = ImGuiDrawView.mm Tweak.x
+# 🌟 ImGuiの本体ファイルも全部一緒にビルドするように指定するじょ！
+AibouESP_FILES = Tweak.x ImGuiDrawView.mm imgui.cpp imgui_draw.cpp imgui_widgets.cpp imgui_tables.cpp imgui_impl_metal.mm
+
 AibouESP_FRAMEWORKS = UIKit Metal MetalKit QuartzCore
-AibouESP_CFLAGS = -fobjc-arc
+AibouESP_CFLAGS = -fobjc-arc -I.
 
 include $(THEOS_MAKE_PATH)/tweak.mk
-
