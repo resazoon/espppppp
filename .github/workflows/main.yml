@@ -8,24 +8,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Prepare Theos & SDK
+      - name: Prepare Theos & Toolchain
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential perl git curl libfl-dev libssl-dev
           export THEOS=/opt/theos
-          # Theos本体をクローン
           git clone --recursive https://github.com/theos/theos.git $THEOS
           
-          # 🌟 絶対に失敗しないSDKの入れ方（別の場所から持ってくるじょ！）
+          # 🌟 ここが重要！「道具（Toolchain）」をダウンロードするじょ
+          curl -LO https://github.com/kabiroberon/theos-toolchain-linux/releases/download/v1.0/iphone-code-11.0-linux-x86_64.tar.gz
+          mkdir -p $THEOS/toolchain/linux/iphone
+          tar -xf iphone-code-11.0-linux-x86_64.tar.gz -C $THEOS/toolchain/linux/iphone --strip-components=1
+          
+          # 🌟 SDKも確実にセット
           mkdir -p $THEOS/sdks
           curl -L https://github.com/theos/sdks/archive/master.tar.gz -o sdks.tar.gz
           tar -xf sdks.tar.gz
-          # フォルダ名を確認して確実に移動させるじょ
           mv sdks-master/*.sdk $THEOS/sdks/ || true
-          rm -rf sdks-master sdks.tar.gz
 
       - name: Build Tweak
         run: |
           export THEOS=/opt/theos
-          # 相棒！ここからが本番だじょ！
           make package FINALPACKAGE=1 THEOS_DEVICE_ARCHS="arm64 arm64e"
