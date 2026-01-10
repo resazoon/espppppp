@@ -13,17 +13,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential perl git curl libfl-dev libssl-dev xz-utils
           export THEOS=/opt/theos
-          # Theos本体をクローン
           git clone --recursive https://github.com/theos/theos.git $THEOS
           
-          # 🌟 絶対に壊れないSDKの入れ方
+          # 🌟 SDKを1つだけ、確実に入れる魔法
           mkdir -p $THEOS/sdks
-          curl -L https://github.com/theos/sdks/archive/master.tar.gz -o sdks.tar.gz
-          tar -xf sdks.tar.gz
-          mv sdks-master/*.sdk $THEOS/sdks/ || true
+          curl -L https://github.com/theos/sdks/raw/master/iPhoneOS14.5.sdk.tar.xz -o sdk.tar.xz
+          tar -xf sdk.tar.xz -C $THEOS/sdks/
+          rm sdk.tar.xz
 
       - name: Build Tweak
         run: |
           export THEOS=/opt/theos
-          # 🌟 道具（Toolchain）はインストール済みの標準のものを使うように修正！
-          make package FINALPACKAGE=1 THEOS_DEVICE_ARCHS="arm64 arm64e"
+          # 余計な指定をせず、Makefileに任せるじょ！
+          make package FINALPACKAGE=1
