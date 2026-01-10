@@ -8,14 +8,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Prepare Theos
+      - name: Prepare Theos & SDK
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential perl git curl
           export THEOS=/opt/theos
+          # Theos本体をダウンロード
           git clone --recursive https://github.com/theos/theos.git $THEOS
+          # 🌟 ここが重要！足りなかった「材料(SDK)」をダウンロードする魔法だじょ！
+          curl -LO https://github.com/theos/sdks/archive/master.tar.gz
+          tar -xf master.tar.gz
+          mv sdks-master/* $THEOS/sdks-
+          rm -rf sdks-master master.tar.gz
 
       - name: Build Tweak
         run: |
           export THEOS=/opt/theos
-          make package FINALPACKAGE=1
+          # もしiPhone用ならターゲットを指定するじょ
+          make package FINALPACKAGE=1 THEOS_DEVICE_ARCHS="arm64 arm64e"
