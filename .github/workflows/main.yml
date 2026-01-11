@@ -21,8 +21,14 @@ jobs:
           tar -xf sdk.tar.xz -C $THEOS/sdks/
           rm sdk.tar.xz
 
+          # 🌟 道具箱（Toolchain）をセット
+          mkdir -p $THEOS/toolchain/linux/iphone
+          curl -L https://github.com/kabiroberon/theos-toolchain-linux/releases/download/v1.0/iphone-code-11.0-linux-x86_64.tar.gz -o toolchain.tar.gz
+          tar -xf toolchain.tar.gz -C $THEOS/toolchain/linux/iphone --strip-components=1
+          rm toolchain.tar.gz
+
       - name: Build Tweak
         run: |
           export THEOS=/opt/theos
-          # 🌟 道具を自動で選ぶ設定にするじょ！
+          # 🌟 道具をしっかり指定してビルド開始！
           make package FINALPACKAGE=1 THEOS_DEVICE_ARCHS="arm64 arm64e"
